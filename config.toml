@@ -41,23 +41,31 @@ disqusShortname = ""
     subtitle = "By Roswitha Trappe"
     menu = "Menu"
     # Optional logo as brand stored in img/
-    # logo = "logo.png"
+    #logo = "logo.jpg"
 
     [[params.navigation.links]]
       name = "Home"
       url = "#"
 
     [[params.navigation.links]]
-      name = "Blogs"
-      url = "blogs"
+      name = "Switzerland"
+      url = "blogs/aquilam"
 
     [[params.navigation.links]]
-      name = "Generic Blog"
+      name = "IMBD Ratings Analysis"
+      url = "blogs/tempus"
+
+    [[params.navigation.links]]
+      name = "Beer Consumption Analysis"
+      url = "blogs/magna"
+
+    [[params.navigation.links]]
+      name = "Weather Anomalies"
       url = "blogs/ipsum"
 
-    [[params.navigation.links]]
-      name = "Elements"
-      url = "elements.html"
+  # [[params.navigation.links]]
+   #   name = "Elements"
+    #  url = "elements.html"
 
     # Add custom links here by uncommenting code below. To remove links just delete
     # the [[params.navigation.links]] map associated with that link. Copy and paste
@@ -67,14 +75,14 @@ disqusShortname = ""
     #    url = "UrlOfLink"
 
     # Button Style 1
-    [[params.navigation.button1]]
-      name = "Get Started"
-      url = "blogs"
+  #  [[params.navigation.button1]]
+  #    name = "Get Started"
+  #    url = "blogs"
 
     # Button Style 2
     [[params.navigation.button2]]
       name = "Log In"
-      url = "#"
+      url = "https://github.com/kostis-christodoulou"
 
 
   # Banner section
@@ -137,15 +145,15 @@ disqusShortname = ""
 
   # Section Type Two
   [params.two]
-    enable = true
-    title = "Massa libero"
-    subtitle = """Nullam et orci eu lorem consequat tincidunt vivamus et sagittis libero. 
-    Mauris aliquet magna magna sed nunc rhoncus pharetra. 
-    Pellentesque condimentum sem. In efficitur ligula tate urna. Maecenas laoreet massa vel lacinia pellentesque lorem ipsum dolor. 
-    Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis libero.
-    Mauris aliquet magna magna sed nunc rhoncus amet pharetra et feugiat tempus."""
-    buttonText = "Get Started"
-    url = "blogs"
+    #enable = true
+    #title = "Massa libero"
+    #subtitle = """Nullam et orci eu lorem consequat tincidunt vivamus et sagittis libero. 
+    #Mauris aliquet magna magna sed nunc rhoncus pharetra. 
+    #Pellentesque condimentum sem. In efficitur ligula tate urna. Maecenas laoreet massa vel lacinia pellentesque lorem ipsum dolor. 
+    #Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis libero.
+    #Mauris aliquet magna magna sed nunc rhoncus amet pharetra et feugiat tempus."""
+    #buttonText = "Get Started"
+    #url = "blogs"
 
 
   # Contact section

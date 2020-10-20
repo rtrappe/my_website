@@ -52,20 +52,20 @@
             
                 <li><a href="/">Home</a></li>
             
-                <li><a href="/blogs">Blogs</a></li>
+                <li><a href="/blogs/aquilam">Switzerland</a></li>
             
-                <li><a href="/blogs/ipsum">Generic Blog</a></li>
+                <li><a href="/blogs/tempus">IMBD Ratings Analysis</a></li>
             
-                <li><a href="/elements.html">Elements</a></li>
+                <li><a href="/blogs/magna">Beer Consumption Analysis</a></li>
+            
+                <li><a href="/blogs/ipsum">Weather Anomalies</a></li>
             
 
         </ul>
         <ul class="actions vertical">
             
-                <li><a href="/blogs" class="button special fit">Get Started</a></li>
             
-            
-                <li><a href="/" class="button fit">Log In</a></li>
+                <li><a href="https://github.com/kostis-christodoulou" class="button fit">GitHub God</a></li>
             
         </ul>
     </nav>
@@ -86,53 +86,41 @@
 
 <div id="how-much-have-temperatures-changed-over-the-past-century" class="section level2">
 <h2>How much have temperatures changed over the past century?</h2>
+<p>First we load all the necessary libraries for this analysis:</p>
+<pre class="r"><code>library(tidyverse)  
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(httr)
+library(readxl)
+library(vroom)</code></pre>
+<p>Then we check out the data provided by NASA through the link below and skip NA variables.</p>
 <pre class="r"><code>weather &lt;- 
   read_csv(&quot;https://data.giss.nasa.gov/gistemp/tabledata_v3/NH.Ts+dSST.csv&quot;, 
            skip = 1, 
            na = &quot;***&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   Year = col_double(),
-##   Jan = col_double(),
-##   Feb = col_double(),
-##   Mar = col_double(),
-##   Apr = col_double(),
-##   May = col_double(),
-##   Jun = col_double(),
-##   Jul = col_double(),
-##   Aug = col_double(),
-##   Sep = col_double(),
-##   Oct = col_double(),
-##   Nov = col_double(),
-##   Dec = col_double(),
-##   `J-D` = col_double(),
-##   `D-N` = col_double(),
-##   DJF = col_double(),
-##   MAM = col_double(),
-##   JJA = col_double(),
-##   SON = col_double()
-## )</code></pre>
+<p>Further, we use the pivot function to adapt the data to our needs.</p>
 <pre class="r"><code>tidyweather &lt;- weather %&gt;% 
   select(Year, Jan:Dec) %&gt;% 
   pivot_longer(cols=&quot;Jan&quot;:&quot;Dec&quot;, names_to=&quot;Month&quot;, values_to=&quot;delta&quot;)</code></pre>
+<p>Now, we’ll use the mutate function to further adapt the tidyweather dataframe.</p>
 <pre class="r"><code>tidyweather &lt;- tidyweather %&gt;%
-  mutate(date = ymd(paste(as.character(Year), Month, &quot;1&quot;)),
-         month = month(date, label=TRUE),
+  mutate(date = ymd(paste(as.character(Year), Month, &quot;1&quot;)), #Paste it as Year, Month, Date 
+         month = month(date, label=TRUE), #label it
          year = year(date)) 
 
-ggplot(tidyweather, aes(x=date, y = delta))+
+ggplot(tidyweather, aes(x=date, y = delta))+ #create the ggplot graph
   geom_point()+
-  geom_smooth(color=&quot;red&quot;) +
+  geom_smooth(color=&quot;red&quot;) + 
   theme_bw() +
   labs (
     title = &quot;Weather Anomalies&quot;
   )</code></pre>
-<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
-<pre><code>## Warning: Removed 5 rows containing non-finite values (stat_smooth).</code></pre>
-<pre><code>## Warning: Removed 5 rows containing missing values (geom_point).</code></pre>
 <p><img src="/blogs/ipsum/index_files/figure-html/scatter_plot-1.png" width="672" /></p>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+<p>We can see a slight upward trend over the first half of the 20th century, and a rather steep increase from the 1970s on. Note the outliers in recent years!</p>
 </div>
 
                         </div>
@@ -147,8 +135,6 @@ ggplot(tidyweather, aes(x=date, y = delta))+
     <footer id="footer">
         <div class="inner">
             <ul class="icons">
-                
-                    <li><a href="https://www.facebook.com" class="icon alt fa-facebook" target="_blank"><span class="label">Facebook</span></a></li>
                 
                     <li><a href="https://www.instagram.com/myswitzerland/?hl=en" class="icon alt fa-instagram" target="_blank"><span class="label">Instagram</span></a></li>
                 

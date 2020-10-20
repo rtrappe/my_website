@@ -12,21 +12,20 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Check out where I'm from!
 
 Please find a few pictures of Switzerland below. 
-#<img class="special-img-class" src="/Users/Rosie/Documents/R Studio/my_website/static/blogs/aliquam/Bahn.jpg" />
 
-```{r Switzerland_images, message=FALSE, warning=FALSE, echo=FALSE,fig.show='hold'}
+![Lauterbrunnen](Wasserfall.jpg)
 
-knitr::include_graphics(here::here("static", "blogs", "aliquam", "Bahn.jpg"))
+![Zermatt](Zermatt.jpg)
 
-#knitr::include_graphics("/Users/Rosie/Documents/R Studio/my_website/static/blogs/aliquam/Bahn.jpg")
+![Bernina Express](Bernina.jpg)
 
-knitr::include_graphics(here::here("public", "blogs", "aliquam", "Wasserfall.jpg"))
+![Bern](Bern.jpg)
 
-knitr::include_graphics(here::here("public", "blogs", "aliquam", "Zermatt.jpg"))
-
-```
 
 ## Or watch this video for 4k visuals
 
-![](https://www.youtube.com/watch?v=W4Ou96H-cPc)
+```{r, eval=TRUE, echo=FALSE}
+blogdown::shortcode("youtube", "W4Ou96H-cPc")
+```
+
 

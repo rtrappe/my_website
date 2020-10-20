@@ -10,8 +10,25 @@ output: html_document
 
 <div id="do-spielberg-and-burton-have-the-same-imbd-ratings" class="section level2">
 <h2>Do Spielberg and Burton have the same IMBD ratings?</h2>
-<p>Null hypothesis: Steven Spielberg and Tim Burton have the same IMDB Ratings.
-Alternative hypothesis: Steven Spielberg and Tim Burton do not have the same IMDB Ratings</p>
+<p>Null hypothesis: Steven Spielberg and Tim Burton have the same IMDB Ratings.</p>
+<p>Alternative hypothesis: Steven Spielberg and Tim Burton do not have the same IMDB Ratings</p>
+<pre class="r"><code>library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(GGally)
+library(readxl)
+library(here)
+library(skimr)
+library(janitor)
+library(broom)
+library(tidyquant)
+library(infer)
+library(openintro)
+library(tidyquant)
+library(lubridate)</code></pre>
+<p>First, let’s read the movies.csv file which contains all the movies and take a look at the data through glimpse.</p>
+<pre class="r"><code>movies &lt;- read_csv(here::here(&quot;Theme copy&quot;, &quot;data&quot;, &quot;movies.csv&quot;))
+glimpse(movies)</code></pre>
 <pre><code>## Rows: 2,961
 ## Columns: 11
 ## $ title               &lt;chr&gt; &quot;Avatar&quot;, &quot;Titanic&quot;, &quot;Jurassic World&quot;, &quot;The Aveng…
@@ -25,4 +42,133 @@ Alternative hypothesis: Steven Spielberg and Tim Burton do not have the same IMD
 ## $ votes               &lt;dbl&gt; 886204, 793059, 418214, 995415, 1676169, 534658, …
 ## $ reviews             &lt;dbl&gt; 3777, 2843, 1934, 2425, 5312, 3917, 1752, 1752, 3…
 ## $ rating              &lt;dbl&gt; 7.9, 7.7, 7.0, 8.1, 9.0, 6.5, 8.7, 7.5, 8.5, 7.2,…</code></pre>
+<p>Then, we’ll proceed with the following:</p>
+<pre class="r"><code>##load the data and arrange in order by director to get an overview 
+df &lt;- movies %&gt;%
+      count(director) %&gt;%
+      arrange(desc(n))
+  
+df </code></pre>
+<pre><code>## # A tibble: 1,366 x 2
+##    director              n
+##    &lt;chr&gt;             &lt;int&gt;
+##  1 Steven Spielberg     23
+##  2 Clint Eastwood       19
+##  3 Martin Scorsese      16
+##  4 Tim Burton           16
+##  5 Spike Lee            15
+##  6 Steven Soderbergh    15
+##  7 Woody Allen          15
+##  8 Renny Harlin         14
+##  9 Ridley Scott         14
+## 10 Barry Levinson       13
+## # … with 1,356 more rows</code></pre>
+<pre class="r"><code>#filter the movies data to see only data for Spielberg and Burton, then summarise by rating mean, SD, count, Se, t_critical, Rating_lower and Rating_upper, and plot in a table
+StevenTimRatings &lt;- movies %&gt;%
+                    group_by(director) %&gt;%
+                    filter(director %in% c(&quot;Steven Spielberg&quot;, &quot;Tim Burton&quot;)) %&gt;%
+                    summarise(Rating_Mean = mean(rating, na.rm = TRUE),
+                              Rating_SD = sd(rating, na.rm = TRUE),
+                              Rating_count = n(),
+                              Rating_Se = Rating_SD/sqrt(Rating_count),
+                              t_critical = qt(0.975, Rating_count - 1),
+                              Rating_lower = Rating_Mean - Rating_Se * t_critical,
+                              Rating_upper = Rating_Mean + Rating_Se * t_critical) 
+
+StevenTimRatings #print</code></pre>
+<pre><code>## # A tibble: 2 x 8
+##   director Rating_Mean Rating_SD Rating_count Rating_Se t_critical Rating_lower
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;        &lt;int&gt;     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;
+## 1 Steven …        7.57     0.695           23     0.145       2.07         7.27
+## 2 Tim Bur…        6.93     0.749           16     0.187       2.13         6.53
+## # … with 1 more variable: Rating_upper &lt;dbl&gt;</code></pre>
+<pre class="r"><code>#plot the errorbar 
+Ratings_CI &lt;- ggplot(StevenTimRatings, aes(x=Rating_Mean, 
+                                          y = reorder(director,Rating_Mean),
+                                          xmin = Rating_lower, 
+                                          xmax = Rating_upper))+
+              geom_errorbar(aes(xmin = Rating_lower, 
+                                xmax = Rating_upper, 
+                                colour = director, 
+                                fill = director), 
+                                width = 0.2, 
+                                size = 1.5)+
+              geom_point(size = 3, shape = 16)+
+              geom_rect(xmin = 7.27, 
+                        xmax = 7.33, 
+                        ymin = 0, 
+                        ymax = 10, 
+                        fill = &quot;grey&quot;, 
+                        aes(alpha = 0.5))+
+              geom_text(aes(label = round(Rating_lower, 2)), 
+                            hjust = 4, 
+                            vjust = - 1) +
+              geom_text(aes(label = round(Rating_upper, 2)), 
+                            hjust = - 4, 
+                            vjust = - 1) +
+              geom_text(aes(label = round(Rating_Mean, 2)), 
+                            size = 5, 
+                            hjust = 0.4, 
+                            vjust = -1)+
+              labs (title = &quot;Do Spielberg and Burton have the same mean IMBD ratings?&quot;,
+                    subtitle = &quot;95% confidence intervals overlap&quot;,
+                    y=NULL,
+                    x = &quot;Mean IMBD Rating&quot;)+
+              theme_bw() +
+              theme(legend.position = &quot;none&quot;) 
+
+Ratings_CI</code></pre>
+<p><img src="/blogs/tempus/index_files/figure-html/movie_plots-1.png" width="672" /></p>
+<pre class="r"><code>Spielberg_rating &lt;- movies %&gt;%
+  filter(director == &quot;Steven Spielberg&quot;) %&gt;%
+  select(rating)
+  
+Burton_rating &lt;- movies %&gt;%
+  filter(director == &quot;Tim Burton&quot;) %&gt;%
+  select(rating)
+
+t.test(Spielberg_rating,Burton_rating)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  Spielberg_rating and Burton_rating
+## t = 2.7144, df = 30.812, p-value = 0.01078
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.1596624 1.1256637
+## sample estimates:
+## mean of x mean of y 
+##  7.573913  6.931250</code></pre>
+<pre class="r"><code>SteveTimR &lt;- movies %&gt;% 
+  select(rating, director) %&gt;% 
+  filter(director %in% c(&quot;Tim Burton&quot;, &quot;Steven Spielberg&quot;)) 
+
+#calculate the difference in means
+diff_means &lt;- SteveTimR %&gt;%
+  specify(rating ~ director) %&gt;%
+  calculate(stat = &quot;diff in means&quot;, order = c(&quot;Tim Burton&quot;, &quot;Steven Spielberg&quot;))
+
+#use infer package to generate 1000 reps and calculate difference in means
+infer_ratings &lt;- movies %&gt;%
+  filter(director == &quot;Steven Spielberg&quot; | director == &quot;Tim Burton&quot;) %&gt;%
+  specify(rating ~ director) %&gt;%
+  hypothesize(null = &quot;independence&quot;) %&gt;%
+  generate(reps = 1000, type = &quot;permute&quot;) %&gt;%
+  calculate(stat = &quot;diff in means&quot;, order = c(&quot;Steven Spielberg&quot;, &quot;Tim Burton&quot;))
+
+#plot date
+ggplot(data = infer_ratings, aes(x = stat)) +
+  geom_histogram()</code></pre>
+<p><img src="/blogs/tempus/index_files/figure-html/movie_plots-2.png" width="672" /></p>
+<pre class="r"><code>#visualise infer_ratings
+infer_ratings %&gt;% visualize() +
+  shade_p_value(obs_stat = diff_means, direction = &quot;two-sided&quot;)</code></pre>
+<p><img src="/blogs/tempus/index_files/figure-html/movie_plots-3.png" width="672" /></p>
+<pre class="r"><code>#get p value
+infer_ratings %&gt;%
+  get_p_value(obs_stat = diff_means, direction = &quot;two_sided&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   p_value
+##     &lt;dbl&gt;
+## 1   0.004</code></pre>
 </div>

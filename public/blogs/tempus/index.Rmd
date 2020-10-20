@@ -9,7 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r load-libraries, message=FALSE, warning=FALSE, echo=FALSE}
+
+## Do Spielberg and Burton have the same IMBD ratings? 
+
+Null hypothesis: Steven Spielberg and Tim Burton have the same IMDB Ratings. 
+
+Alternative hypothesis: Steven Spielberg and Tim Burton do not have the same IMDB Ratings 
+
+```{r load-libraries, include=TRUE, message=FALSE, warning=FALSE}
 
 library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
 library(mosaic)
@@ -27,23 +34,18 @@ library(tidyquant)
 library(lubridate)
 ```
 
+First, let's read the movies.csv file which contains all the movies and take a look at the data through glimpse.
 
-
-## Do Spielberg and Burton have the same IMBD ratings? 
-
-Null hypothesis: Steven Spielberg and Tim Burton have the same IMDB Ratings. 
-Alternative hypothesis: Steven Spielberg and Tim Burton do not have the same IMDB Ratings 
-
-
-
-```{r load-movies-data, message=FALSE, warning=FALSE, echo=FALSE}
+```{r load-movies-data, include=TRUE, message=FALSE, warning=FALSE}
 movies <- read_csv(here::here("Theme copy", "data", "movies.csv"))
 glimpse(movies)
 
 
 ```
 
-```{r movie_plots, message=FALSE, warning=FALSE, echo=FALSE, include=FALSE}
+Then, we'll proceed with the following:
+
+```{r movie_plots, include=TRUE, message=FALSE, warning=FALSE}
 
 ##load the data and arrange in order by director to get an overview 
 df <- movies %>%
@@ -52,7 +54,7 @@ df <- movies %>%
   
 df 
 
-##filter the movies data to see only data for Spielberg and Burton, then summarise by rating mean, SD, count, Se, t_critical, Rating_lower and Rating_upper, and plot in a table
+#filter the movies data to see only data for Spielberg and Burton, then summarise by rating mean, SD, count, Se, t_critical, Rating_lower and Rating_upper, and plot in a table
 StevenTimRatings <- movies %>%
                     group_by(director) %>%
                     filter(director %in% c("Steven Spielberg", "Tim Burton")) %>%
@@ -64,9 +66,9 @@ StevenTimRatings <- movies %>%
                               Rating_lower = Rating_Mean - Rating_Se * t_critical,
                               Rating_upper = Rating_Mean + Rating_Se * t_critical) 
 
-StevenTimRatings ##print
+StevenTimRatings #print
 
-#plot errorbar 
+#plot the errorbar 
 Ratings_CI <- ggplot(StevenTimRatings, aes(x=Rating_Mean, 
                                           y = reorder(director,Rating_Mean),
                                           xmin = Rating_lower, 

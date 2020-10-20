@@ -9,7 +9,11 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r load-libraries, warning=FALSE, message=FALSE, echo=FALSE}
+## Which nation consumes the most beer?
+
+First, we'll load all the libraries
+
+```{r load-libraries, include=TRUE, message=FALSE, warning=FALSE}
 library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
 library(mosaic)
 library (dplyr)
@@ -32,27 +36,26 @@ library(ggrepel)
 
 ```
 
+Then we'll select the drinks data from the library.
 
-
-## Which nation consumes the most beer?
-
-Looking at the data, it appears that Namibia, Czech Republic and Gabon record the most beer servings per person per year! 
-
-
-```{r, load_alcohol_data, message=FALSE, warning=FALSE, echo=FALSE} 
+```{r, load_alcohol_data, include=TRUE, message=FALSE, warning=FALSE} 
 library(fivethirtyeight)
 data(drinks)
 
 
 ```
 
-```{r glimpse_skim_data, message=FALSE, warning=FALSE, echo=FALSE}
+Let's take a glimpse of the data. 
+
+```{r glimpse_skim_data, include=TRUE, message=FALSE, warning=FALSE}
 glimpse(drinks)
 skim(drinks)
 
 ```
 
-```{r beer_plot, message=FALSE, warning=FALSE, echo=FALSE}
+What are the top 25 countries in descending order? 
+
+```{r beer_plot, include=TRUE, message=FALSE, warning=FALSE}
 Top25 <- drinks %>%
         slice_max(beer_servings, n=25)
 
@@ -63,4 +66,4 @@ ggplot(Top25, aes(x=reorder(country,beer_servings),y=beer_servings))+
   NULL
 ```
 
-
+Looking at the data, it appears that Namibia, Czech Republic and Gabon record the most beer servings per person per year! 

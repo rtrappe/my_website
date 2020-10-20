@@ -10,7 +10,31 @@ output: html_document
 
 <div id="which-nation-consumes-the-most-beer" class="section level2">
 <h2>Which nation consumes the most beer?</h2>
-<p>Looking at the data, it appears that Namibia, Czech Republic and Gabon record the most beer servings per person per year!</p>
+<p>First, we’ll load all the libraries</p>
+<pre class="r"><code>library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library (dplyr)
+library(ggthemes)
+library(lubridate)
+library(fivethirtyeight)
+library(here)
+library(skimr)
+library(scales)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(rvest)    
+library(purrr)  
+library(lubridate)
+library(patchwork)
+library(gt)
+library(tidytext)
+library(ggrepel)</code></pre>
+<p>Then we’ll select the drinks data from the library.</p>
+<pre class="r"><code>library(fivethirtyeight)
+data(drinks)</code></pre>
+<p>Let’s take a glimpse of the data.</p>
+<pre class="r"><code>glimpse(drinks)</code></pre>
 <pre><code>## Rows: 193
 ## Columns: 5
 ## $ country                      &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;An…
@@ -18,6 +42,7 @@ output: html_document
 ## $ spirit_servings              &lt;int&gt; 0, 132, 0, 138, 57, 128, 25, 179, 72, 75…
 ## $ wine_servings                &lt;int&gt; 0, 54, 14, 312, 45, 45, 221, 11, 212, 19…
 ## $ total_litres_of_pure_alcohol &lt;dbl&gt; 0.0, 4.9, 0.7, 12.4, 5.9, 4.9, 8.3, 3.8,…</code></pre>
+<pre class="r"><code>skim(drinks)</code></pre>
 <table>
 <caption>(#tab:glimpse_skim_data)Data summary</caption>
 <tbody>
@@ -158,5 +183,15 @@ output: html_document
 </tr>
 </tbody>
 </table>
+<p>What are the top 25 countries in descending order?</p>
+<pre class="r"><code>Top25 &lt;- drinks %&gt;%
+        slice_max(beer_servings, n=25)
+
+ggplot(Top25, aes(x=reorder(country,beer_servings),y=beer_servings))+
+      geom_bar(stat=&quot;identity&quot;)+
+      coord_flip()+
+     labs(y= &quot;Beer Servings per Person&quot;, x = &quot;Countries&quot;, title = &quot;Top 25 Beer Consuming Countries&quot;)+
+  NULL</code></pre>
 <p><img src="/blogs/magna/index_files/figure-html/beer_plot-1.png" width="672" /></p>
+<p>Looking at the data, it appears that Namibia, Czech Republic and Gabon record the most beer servings per person per year!</p>
 </div>

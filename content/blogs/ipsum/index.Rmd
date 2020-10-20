@@ -11,8 +11,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## How much have temperatures changed over the past century?
 
-```{r load-libraries, include=FALSE}
-library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+First we load all the necessary libraries for this analysis: 
+
+```{r load-libraries, include=TRUE, message=FALSE, warning=FALSE}
+library(tidyverse)  
 library(mosaic)
 library(ggthemes)
 library(lubridate)
@@ -24,7 +26,9 @@ library(readxl)
 library(vroom)
 ```
 
-```{r weather_data, cache=TRUE}
+Then we check out the data provided by NASA through the link below and skip NA variables. 
+
+```{r weather_data, include=TRUE, message=FALSE, warning=FALSE}
 
 weather <- 
   read_csv("https://data.giss.nasa.gov/gistemp/tabledata_v3/NH.Ts+dSST.csv", 
@@ -33,22 +37,26 @@ weather <-
 
 ```
 
-```{r tidyweather}
+Further, we use the pivot function to adapt the data to our needs.
+
+```{r tidyweather, include=TRUE, message=FALSE, warning=FALSE}
 tidyweather <- weather %>% 
   select(Year, Jan:Dec) %>% 
   pivot_longer(cols="Jan":"Dec", names_to="Month", values_to="delta")
 ```
 
-```{r scatter_plot}
+Now, we'll use the mutate function to further adapt the tidyweather dataframe. 
+
+```{r scatter_plot, include=TRUE, message=FALSE, warning=FALSE}
 
 tidyweather <- tidyweather %>%
-  mutate(date = ymd(paste(as.character(Year), Month, "1")),
-         month = month(date, label=TRUE),
+  mutate(date = ymd(paste(as.character(Year), Month, "1")), #Paste it as Year, Month, Date 
+         month = month(date, label=TRUE), #label it
          year = year(date)) 
 
-ggplot(tidyweather, aes(x=date, y = delta))+
+ggplot(tidyweather, aes(x=date, y = delta))+ #create the ggplot graph
   geom_point()+
-  geom_smooth(color="red") +
+  geom_smooth(color="red") + 
   theme_bw() +
   labs (
     title = "Weather Anomalies"
@@ -56,11 +64,8 @@ ggplot(tidyweather, aes(x=date, y = delta))+
 
 ```
 
+We can see a slight upward trend over the first half of the 20th century, and a rather steep increase from the 1970s on. Note the outliers in recent years! 
 
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 
 
