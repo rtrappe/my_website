@@ -49,7 +49,7 @@ disqusShortname = ""
 
     [[params.navigation.links]]
       name = "Switzerland"
-      url = "blogs/aquilam"
+      url = "blogs/aliquam"
 
     [[params.navigation.links]]
       name = "IMBD Ratings Analysis"
@@ -63,9 +63,9 @@ disqusShortname = ""
       name = "Weather Anomalies"
       url = "blogs/ipsum"
 
-  # [[params.navigation.links]]
-   #   name = "Elements"
-    #  url = "elements.html"
+   #[[params.navigation.links]]
+    #  name = "Elements"
+     # url = "elements.html"
 
     # Add custom links here by uncommenting code below. To remove links just delete
     # the [[params.navigation.links]] map associated with that link. Copy and paste
@@ -81,7 +81,7 @@ disqusShortname = ""
 
     # Button Style 2
     [[params.navigation.button2]]
-      name = "Log In"
+      name = "GitHub God"
       url = "https://github.com/kostis-christodoulou"
 
 
@@ -101,7 +101,7 @@ disqusShortname = ""
     
     [[params.tiles.showcase]]
       title = "Switzerland"
-      subtitle = "check out where I'm from"
+      subtitle = "Check out where I'm from"
       image = "Bern.jpg"
       url = "blogs/aliquam"
 
@@ -123,17 +123,17 @@ disqusShortname = ""
       image = "climate.jpg"
       url = "blogs/ipsum"
 
-    [[params.tiles.showcase]]
-      title = "Consequat"
-      subtitle = "Ipsum Dolor Sit Amet"
-      image = "pic05.jpg"
-      url = "blogs/ipsum"
+    #[[params.tiles.showcase]]
+     # title = "Consequat"
+     # subtitle = "Ipsum Dolor Sit Amet"
+     # image = "pic05.jpg"
+    #  url = "blogs/ipsum"
 
-    [[params.tiles.showcase]]
-      title = "Etiam"
-      subtitle = "Feugiat Amet Tempus"
-      image = "pic06.jpg"
-      url = "blogs/ipsum"
+  #  [[params.tiles.showcase]]
+   #   title = "Etiam"
+    #  subtitle = "Feugiat Amet Tempus"
+     # image = "pic06.jpg"
+      #url = "blogs/ipsum"
     # You can make more showcases by copy and pasting the code above
 
   [params.blog]
@@ -203,10 +203,10 @@ disqusShortname = ""
       #url= "https://www.twitter.com"
       #label = "Twitter"
 
-    [[params.footer.social]]
-      icon = "fa-facebook"
-      url= "https://www.facebook.com"
-      label = "Facebook"
+#    [[params.footer.social]]
+ #     icon = "fa-facebook"
+  #    url= "https://www.facebook.com"
+   #   label = "Facebook"
 
     [[params.footer.social]]
       icon = "fa-instagram"
