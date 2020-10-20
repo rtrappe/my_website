@@ -1,0 +1,148 @@
+---
+title: "IMBD Ratings"
+author: "me"
+date: "20/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load-libraries, message=FALSE, warning=FALSE, echo=FALSE}
+
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(GGally)
+library(readxl)
+library(here)
+library(skimr)
+library(janitor)
+library(broom)
+library(tidyquant)
+library(infer)
+library(openintro)
+library(tidyquant)
+library(lubridate)
+```
+
+
+
+## Do Spielberg and Burton have the same IMBD ratings? 
+
+Null hypothesis: Steven Spielberg and Tim Burton have the same IMDB Ratings. 
+Alternative hypothesis: Steven Spielberg and Tim Burton do not have the same IMDB Ratings 
+
+
+
+```{r load-movies-data, message=FALSE, warning=FALSE, echo=FALSE}
+movies <- read_csv(here::here("Theme copy", "data", "movies.csv"))
+glimpse(movies)
+
+
+```
+
+```{r movie_plots, message=FALSE, warning=FALSE, echo=FALSE, include=FALSE}
+
+##load the data and arrange in order by director to get an overview 
+df <- movies %>%
+      count(director) %>%
+      arrange(desc(n))
+  
+df 
+
+##filter the movies data to see only data for Spielberg and Burton, then summarise by rating mean, SD, count, Se, t_critical, Rating_lower and Rating_upper, and plot in a table
+StevenTimRatings <- movies %>%
+                    group_by(director) %>%
+                    filter(director %in% c("Steven Spielberg", "Tim Burton")) %>%
+                    summarise(Rating_Mean = mean(rating, na.rm = TRUE),
+                              Rating_SD = sd(rating, na.rm = TRUE),
+                              Rating_count = n(),
+                              Rating_Se = Rating_SD/sqrt(Rating_count),
+                              t_critical = qt(0.975, Rating_count - 1),
+                              Rating_lower = Rating_Mean - Rating_Se * t_critical,
+                              Rating_upper = Rating_Mean + Rating_Se * t_critical) 
+
+StevenTimRatings ##print
+
+#plot errorbar 
+Ratings_CI <- ggplot(StevenTimRatings, aes(x=Rating_Mean, 
+                                          y = reorder(director,Rating_Mean),
+                                          xmin = Rating_lower, 
+                                          xmax = Rating_upper))+
+              geom_errorbar(aes(xmin = Rating_lower, 
+                                xmax = Rating_upper, 
+                                colour = director, 
+                                fill = director), 
+                                width = 0.2, 
+                                size = 1.5)+
+              geom_point(size = 3, shape = 16)+
+              geom_rect(xmin = 7.27, 
+                        xmax = 7.33, 
+                        ymin = 0, 
+                        ymax = 10, 
+                        fill = "grey", 
+                        aes(alpha = 0.5))+
+              geom_text(aes(label = round(Rating_lower, 2)), 
+                            hjust = 4, 
+                            vjust = - 1) +
+              geom_text(aes(label = round(Rating_upper, 2)), 
+                            hjust = - 4, 
+                            vjust = - 1) +
+              geom_text(aes(label = round(Rating_Mean, 2)), 
+                            size = 5, 
+                            hjust = 0.4, 
+                            vjust = -1)+
+              labs (title = "Do Spielberg and Burton have the same mean IMBD ratings?",
+                    subtitle = "95% confidence intervals overlap",
+                    y=NULL,
+                    x = "Mean IMBD Rating")+
+              theme_bw() +
+              theme(legend.position = "none") 
+
+Ratings_CI
+
+Spielberg_rating <- movies %>%
+  filter(director == "Steven Spielberg") %>%
+  select(rating)
+  
+Burton_rating <- movies %>%
+  filter(director == "Tim Burton") %>%
+  select(rating)
+
+t.test(Spielberg_rating,Burton_rating)
+
+SteveTimR <- movies %>% 
+  select(rating, director) %>% 
+  filter(director %in% c("Tim Burton", "Steven Spielberg")) 
+
+#calculate the difference in means
+diff_means <- SteveTimR %>%
+  specify(rating ~ director) %>%
+  calculate(stat = "diff in means", order = c("Tim Burton", "Steven Spielberg"))
+
+#use infer package to generate 1000 reps and calculate difference in means
+infer_ratings <- movies %>%
+  filter(director == "Steven Spielberg" | director == "Tim Burton") %>%
+  specify(rating ~ director) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "permute") %>%
+  calculate(stat = "diff in means", order = c("Steven Spielberg", "Tim Burton"))
+
+#plot date
+ggplot(data = infer_ratings, aes(x = stat)) +
+  geom_histogram()
+
+#visualise infer_ratings
+infer_ratings %>% visualize() +
+  shade_p_value(obs_stat = diff_means, direction = "two-sided")
+
+#get p value
+infer_ratings %>%
+  get_p_value(obs_stat = diff_means, direction = "two_sided")
+  
+
+```
+
+

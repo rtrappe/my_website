@@ -1,0 +1,37 @@
+---
+title: "Switzerland"
+author: "me"
+date: "20/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Check out where I'm from!
+
+Please find a few pictures of Switzerland below. 
+<img class="special-img-class" src="/Users/Rosie/Documents/R Studio/my_website/static/blogs/aliquam/Bahn.jpg" />
+
+```{r Switzerland_images, message=FALSE, warning=FALSE, echo=FALSE,fig.show='hold'}
+
+knitr::include_graphics(here::here("static", "blogs", "aliquam", "Bahn.jpg"))
+
+knitr::include_graphics("/Users/Rosie/Documents/R Studio/my_website/static/blogs/aliquam/Bahn.jpg")
+
+knitr::include_graphics(here::here("public", "blogs", "aliquam", "Wasserfall.jpg"))
+
+```
+
+## Or watch this video for 4k visuals
+
+![](https://www.youtube.com/watch?v=W4Ou96H-cPc)
+
+```{r pressure, message=FALSE, warning=FALSE, echo=FALSE,fig.show='hold'}
+
+
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

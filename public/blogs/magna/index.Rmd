@@ -1,0 +1,66 @@
+---
+title: "Beer Consumption Analysis"
+author: "me"
+date: "20/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load-libraries, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library (dplyr)
+library(ggthemes)
+library(lubridate)
+library(fivethirtyeight)
+library(here)
+library(skimr)
+library(scales)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(rvest)    
+library(purrr)  
+library(lubridate)
+library(patchwork)
+library(gt)
+library(tidytext)
+library(ggrepel)
+
+```
+
+
+
+## Which nation consumes the most beer?
+
+Looking at the data, it appears that Namibia, Czech Republic and Gabon record the most beer servings per person per year! 
+
+
+```{r, load_alcohol_data, message=FALSE, warning=FALSE, echo=FALSE} 
+library(fivethirtyeight)
+data(drinks)
+
+
+```
+
+```{r glimpse_skim_data, message=FALSE, warning=FALSE, echo=FALSE}
+glimpse(drinks)
+skim(drinks)
+
+```
+
+```{r beer_plot, message=FALSE, warning=FALSE, echo=FALSE}
+Top25 <- drinks %>%
+        slice_max(beer_servings, n=25)
+
+ggplot(Top25, aes(x=reorder(country,beer_servings),y=beer_servings))+
+      geom_bar(stat="identity")+
+      coord_flip()+
+     labs(y= "Beer Servings per Person", x = "Countries", title = "Top 25 Beer Consuming Countries")+
+  NULL
+```
+
+
